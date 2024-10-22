@@ -1,6 +1,8 @@
 package com.msvalandro.kidsdrawingapp
 
+import android.app.Dialog
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -21,6 +23,38 @@ class MainActivity : AppCompatActivity() {
         }
 
         drawingView = findViewById(R.id.drawing_view)
-        drawingView?.setSizeForBrush(16f)
+        drawingView?.setSizeForBrush(20f)
+
+        val imageButtonBrush: ImageButton = findViewById(R.id.image_button_brush)
+        imageButtonBrush.setOnClickListener {
+            showBrushSizeChooserDialog()
+        }
+    }
+
+    private fun showBrushSizeChooserDialog() {
+        val brushDialog = Dialog(this)
+
+        brushDialog.setContentView(R.layout.dialog_brush_size)
+        brushDialog.setTitle("Brush size: ")
+
+        val smallButton = brushDialog.findViewById<ImageButton>(R.id.image_button_small_brush)
+        smallButton.setOnClickListener {
+            drawingView?.setSizeForBrush(10f)
+            brushDialog.dismiss()
+        }
+
+        val mediumButton = brushDialog.findViewById<ImageButton>(R.id.image_button_medium_brush)
+        mediumButton.setOnClickListener {
+            drawingView?.setSizeForBrush(20f)
+            brushDialog.dismiss()
+        }
+
+        val largeButton = brushDialog.findViewById<ImageButton>(R.id.image_button_large_brush)
+        largeButton.setOnClickListener {
+            drawingView?.setSizeForBrush(30f)
+            brushDialog.dismiss()
+        }
+
+        brushDialog.show()
     }
 }
