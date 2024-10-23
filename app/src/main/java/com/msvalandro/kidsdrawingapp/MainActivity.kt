@@ -2,8 +2,10 @@ package com.msvalandro.kidsdrawingapp
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -67,5 +69,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         brushDialog.show()
+    }
+
+    fun paintClicked(view: View) {
+        if (view !== imageButtonCurrentPaint) {
+            val imageButton = view as ImageButton
+            val colorTag = imageButton.tag.toString()
+
+            drawingView?.setColor(colorTag)
+
+            imageButton.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.pallet_pressed)
+            )
+
+            imageButtonCurrentPaint?.setImageDrawable(
+                ContextCompat.getDrawable(this, R.drawable.pallet_normal)
+            )
+
+            imageButtonCurrentPaint = view
+        }
     }
 }
