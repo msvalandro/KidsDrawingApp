@@ -2,9 +2,12 @@ package com.msvalandro.kidsdrawingapp
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -22,6 +25,15 @@ class MainActivity : AppCompatActivity() {
     private var drawingView: DrawingView? = null
     private var imageButtonCurrentPaint: ImageButton? = null
 
+    val openGalleryLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK && it.data != null) {
+                val imageBackground: ImageView = findViewById(R.id.background)
+
+                imageBackground.setImageURI(it.data?.data)
+            }
+        }
+
     val requestPermission: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             permissions.entries.forEach {
@@ -34,6 +46,11 @@ class MainActivity : AppCompatActivity() {
                         "Permission granted now you can read the storage files.",
                         Toast.LENGTH_LONG
                     ).show()
+
+                    val pickIntent =
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+                    openGalleryLauncher.launch(pickIntent)
                 } else if (permissionName == Manifest.permission.READ_MEDIA_IMAGES) {
                     Toast.makeText(
                         this,
