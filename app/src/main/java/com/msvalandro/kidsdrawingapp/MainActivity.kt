@@ -37,6 +37,7 @@ import java.nio.file.Files
 class MainActivity : AppCompatActivity() {
     private var drawingView: DrawingView? = null
     private var imageButtonCurrentPaint: ImageButton? = null
+    private var customProgressDialog: Dialog? = null
 
     val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -113,6 +114,8 @@ class MainActivity : AppCompatActivity() {
         val imageButtonSave: ImageButton = findViewById(R.id.image_button_save)
         imageButtonSave.setOnClickListener {
             if (isReadStorageAllowed()) {
+                showProgressDialog()
+
                 lifecycleScope.launch {
                     val drawingViewContainer: FrameLayout = findViewById(R.id.drawing_view_container)
 
@@ -236,6 +239,8 @@ class MainActivity : AppCompatActivity() {
                     result = file.absolutePath
 
                     runOnUiThread {
+                        cancelProgressDialog()
+
                         if (result.isNotEmpty()) {
                             Toast.makeText(
                                 this@MainActivity,
@@ -258,5 +263,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         return result
+    }
+
+    private fun showProgressDialog() {
+        customProgressDialog = Dialog(this)
+
+        customProgressDialog?.setContentView(R.layout.dialog_custom_progress)
+
+        customProgressDialog?.show()
+    }
+
+    private fun cancelProgressDialog() {
+        if (customProgressDialog != null) {
+            customProgressDialog?.dismiss()
+            customProgressDialog = null
+        }
     }
 }
